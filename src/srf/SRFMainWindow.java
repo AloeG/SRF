@@ -5,6 +5,7 @@
  */
 package srf;
 
+import java.io.FileNotFoundException;
 import srf.SRF;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -41,6 +42,7 @@ public class SRFMainWindow extends javax.swing.JFrame {
         goButton = new javax.swing.JButton();
         jScrollPane1 = new javax.swing.JScrollPane();
         outputBox = new javax.swing.JEditorPane();
+        commentLabel = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -63,6 +65,11 @@ public class SRFMainWindow extends javax.swing.JFrame {
         });
 
         inputBox.setText("Input, split each word with \";\" or semi-colon");
+        inputBox.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                inputBoxMouseClicked(evt);
+            }
+        });
 
         goLabel.setText("Press to Run");
 
@@ -75,28 +82,33 @@ public class SRFMainWindow extends javax.swing.JFrame {
 
         jScrollPane1.setViewportView(outputBox);
 
+        commentLabel.setText("Comment");
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+            .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 683, Short.MAX_VALUE)
-                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
-                        .addComponent(filenameLable)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(filenameInput, javax.swing.GroupLayout.PREFERRED_SIZE, 89, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(84, 84, 84)
-                        .addComponent(strictToggleLable)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(strictButton)
-                        .addGap(127, 127, 127)
-                        .addComponent(goLabel)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(goButton)
-                        .addGap(0, 0, Short.MAX_VALUE))
-                    .addComponent(inputBox, javax.swing.GroupLayout.Alignment.LEADING))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 683, Short.MAX_VALUE)
+                    .addComponent(inputBox)
+                    .addGroup(layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(filenameLable)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(filenameInput, javax.swing.GroupLayout.PREFERRED_SIZE, 89, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(84, 84, 84)
+                                .addComponent(strictToggleLable)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(strictButton)
+                                .addGap(127, 127, 127)
+                                .addComponent(goLabel)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(goButton))
+                            .addComponent(commentLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 666, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(0, 0, Short.MAX_VALUE)))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -110,8 +122,10 @@ public class SRFMainWindow extends javax.swing.JFrame {
                     .addComponent(strictButton)
                     .addComponent(goLabel)
                     .addComponent(goButton))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(inputBox, javax.swing.GroupLayout.PREFERRED_SIZE, 239, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(1, 1, 1)
+                .addComponent(commentLabel)
+                .addGap(3, 3, 3)
+                .addComponent(inputBox, javax.swing.GroupLayout.PREFERRED_SIZE, 232, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 292, Short.MAX_VALUE))
         );
@@ -134,11 +148,23 @@ public class SRFMainWindow extends javax.swing.JFrame {
         
         try{
             outputBox.setText(SRF.getText(filenameInput.getText(),inputStrings,strictButton.isSelected()));
-        } catch (Exception e){
-            System.out.println("error");
+        } catch (FileNotFoundException fnfee){
+            System.out.println("File not found trying the formats folder");
+            try{
+            outputBox.setText(SRF.getText("formats/"+filenameInput.getText(),inputStrings,strictButton.isSelected()));
+            fnfee.printStackTrace();
+            } catch (Exception snf){
+                snf.printStackTrace();
+            }
+        } catch( Exception e){
             e.printStackTrace();
         }
     }//GEN-LAST:event_goButtonActionPerformed
+
+    private void inputBoxMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_inputBoxMouseClicked
+        // TODO add your handling code here:
+        inputBox.setText("");
+    }//GEN-LAST:event_inputBoxMouseClicked
 
     /**
      * @param args the command line arguments
@@ -178,11 +204,12 @@ public class SRFMainWindow extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    public javax.swing.JLabel commentLabel;
     private javax.swing.JTextField filenameInput;
     private javax.swing.JLabel filenameLable;
     private javax.swing.JButton goButton;
     private javax.swing.JLabel goLabel;
-    private javax.swing.JTextField inputBox;
+    public javax.swing.JTextField inputBox;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JEditorPane outputBox;
     private javax.swing.JToggleButton strictButton;

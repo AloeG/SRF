@@ -21,10 +21,10 @@ public class SRF {
      * @param args the command line arguments
      */
     public static ArrayList errors = new ArrayList();
+    public static SRFMainWindow mw = new SRFMainWindow();
     
     public static void main(String[] args) {
         System.out.println("Stupid Reddit Formatter");
-        SRFMainWindow mw = new SRFMainWindow();
         mw.setTitle("Stupid Reddit Formatter");
         mw.setVisible(true);
     }
@@ -46,8 +46,13 @@ public class SRF {
         int maxWords = defaultWordArray.size();
         //stores the rest in payload
         String line;
-        while ((line = br.readLine()) != null ){
-            payload += line + "\n";
+        while ((line = br.readLine()) != null){
+            if(line.contains("$C")){
+                String comment = line;
+                mw.commentLabel.setText(comment.replace("$C",""));
+            } else{
+                payload += line + "\n";
+            }
         }
         
         if(strict){
